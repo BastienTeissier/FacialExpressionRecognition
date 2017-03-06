@@ -5,6 +5,9 @@ import numpy as np
 nb_classes = 7
 
 def confusion_matrix(predictions, labels):
+    '''
+    Displau the confusion matrix matrix when given the NN predictions and the labels
+    '''
     mat = np.zeros((nb_classes, nb_classes))
     count = np.zeros(nb_classes)
     for i in range(len(labels)):
@@ -14,3 +17,13 @@ def confusion_matrix(predictions, labels):
         mat[i]/=count[i]
     sns.heatmap(mat, annot=True)
     plt.show()
+
+def historic(history):
+    '''
+    Plot historic values of the keras fit process
+    '''
+    keys = history.history.keys()
+    for key in keys:
+        plt.plot(history.history[key])
+        plt.title(key)
+        plt.show()
