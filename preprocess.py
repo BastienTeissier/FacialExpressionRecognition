@@ -1,6 +1,7 @@
 import random
 from keras.utils import np_utils
 import numpy as np
+import cv2
 
 # This issue again may be a constant.py file
 nb_classes = 7
@@ -53,13 +54,9 @@ def fer2013():
     X_test = X_test.reshape(X_test.shape[0], 1, 48, 48)
     X_validation = X_validation.reshape(X_validation.shape[0], 1, 48, 48)
 
-    X_train = X_train.astype('float32')
-    X_test = X_test.astype('float32')
-    X_validation = X_validation.astype('float32')
-
-    X_train /= 255
-    X_test /= 255
-    X_validation /= 255
+    X_train = histogramEqualize(X_train)
+    X_test = histogramEqualize(X_test)
+    X_validation = histogramEqualize(X_validation)
 
     Y_train = np_utils.to_categorical(Y_train, nb_classes)
     Y_test = np_utils.to_categorical(Y_test, nb_classes)
@@ -76,7 +73,7 @@ def fer2013_light(nb_train, nb_validation, nb_test):
     Return (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation)
     '''
     train = np.load('train_set.npy')
-    random.shuffle(train)
+    #random.shuffle(train)
     X_train = []
     Y_train = []
     for t in train[:nb_train]:
@@ -118,13 +115,14 @@ def fer2013_light(nb_train, nb_validation, nb_test):
     X_test = X_test.reshape(X_test.shape[0], 1, 48, 48)
     X_validation = X_validation.reshape(X_validation.shape[0], 1, 48, 48)
 
-    X_train = X_train.astype('float32')
-    X_test = X_test.astype('float32')
-    X_validation = X_validation.astype('float32')
 
-    X_train /= 255
-    X_test /= 255
-    X_validation /= 255
+    X_train = histogramEqualize(X_train)
+    X_test = histogramEqualize(X_test)
+    X_validation = histogramEqualize(X_validation)
+
+    #X_train = X_train.astype('float32')
+    #X_test = X_test.astype('float32')
+    #X_validation = X_validation.astype('float32')
 
     Y_train = np_utils.to_categorical(Y_train, nb_classes)
     Y_test = np_utils.to_categorical(Y_test, nb_classes)
@@ -134,3 +132,26 @@ def fer2013_light(nb_train, nb_validation, nb_test):
     #print(Y_test[0])
 
     return (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation)
+
+def histogramme_cumule(hist):
+    #print(hist)
+    hist_c=[hist[0]]
+    for i in range(1,len(hist)):
+        hist_c.append(float(hist_c[i-1]+hist[i]))
+    hist_c = np.array(hist_c)
+    #print("Histogramme cumulé")
+    #print(len(hist))
+    #print(len(hist_c))
+    return hist_c/hist_c[len(hist_c)-1]*255
+
+def equalize(img):
+    hist = np.histogram(img, bins=np.arange(257))
+    #print(hist[0])
+    hist_cum = histogramme_cumule(hist[0])
+    for i in range(len(img)):
+        for j in range(len(img[i])):
+            img[0][i][j] = hist_cum[int(img[0][i][j])]
+    return img
+
+def histogramEqualize(X):
+    return np.array([equalize(img) for img in X])

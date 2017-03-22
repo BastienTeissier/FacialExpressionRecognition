@@ -2,7 +2,9 @@ from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D, ZeroPadding2D
-from keras.optimizers import RMSprop
+from keras.optimizers import RMSprop, Adagrad
+
+import h5py
 
 from keras import backend as K
 K.set_image_dim_ordering('th')
@@ -51,7 +53,7 @@ def basic():
     return model
 
 
-def vgg():
+def vgg16():
     '''
     Implementation of the vgg16 convolutional neural network
     '''
@@ -60,64 +62,124 @@ def vgg():
     model.add(ZeroPadding2D((1, 1), input_shape=(1, img_rows, img_cols)))
 
     model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_1'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_2'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_1'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_2'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_3'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_1'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_2'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_3'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_1'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_2'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
 
     model.add(ZeroPadding2D((1, 1)))
     model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.1))
     model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(Flatten())
+    model.add(Dense(4096, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(4096, activation='relu'))
+    model.add(Dropout(0.3))
+
+    model.add(Dense(7, activation='softmax'))
+
+    #rms = RMSprop(lr=0.0001, rho=0.9, epsilon=1e-08, decay=0.0)
+    adagrad = Adagrad(lr=0.00005, epsilon=1e-08, decay=0.0)
+
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=adagrad,
+                  metrics=['accuracy'])
+
+    return model
+
+def vgg13():
+    '''
+    Implementation of the vgg13 convolutional neural network
+    '''
+    model = Sequential()
+
+    model.add(ZeroPadding2D((1, 1), input_shape=(1, img_rows, img_cols)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_1'))
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_2'))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+    model.add(Dropout(0.25))
 
     model.add(Flatten())
     model.add(Dense(4096, activation='relu'))
@@ -127,11 +189,107 @@ def vgg():
 
     model.add(Dense(7, activation='softmax'))
 
-    rms = RMSprop(lr=0.00001, rho=0.9, epsilon=1e-08, decay=0.0)
+    #rms = RMSprop(lr=0.0000001, rho=0.9, epsilon=1e-08, decay=0.0)
+    adagrad = Adagrad(lr=0.00005, epsilon=1e-08, decay=0.0) # lr: 0.0005 decay: 0.00005
 
-    # Let's train the model using RMSprop
     model.compile(loss='categorical_crossentropy',
-                  optimizer=rms,
+                  optimizer=adagrad,
+                  metrics=['accuracy'])
+
+    return model
+
+def vgg_face(weights_file):
+    '''
+    Implementation of the vgg_face convolutional neural network
+    '''
+    model = Sequential()
+
+    model.add(ZeroPadding2D((1, 1), input_shape=(3, 48, 48)))
+
+    model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_1'))
+    #model.add(Dropout(0.1))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(64, 3, 3, activation='relu', name='conv1_2'))
+    #model.add(Dropout(0.1))
+
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_1'))
+    #model.add(Dropout(0.1))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(128, 3, 3, activation='relu', name='conv2_2'))
+    #model.add(Dropout(0.1))
+
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_1'))
+    #model.add(Dropout(0.1))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_2'))
+    #model.add(Dropout(0.1))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(256, 3, 3, activation='relu', name='conv3_3'))
+    #model.add(Dropout(0.1))
+
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_1'))
+    #model.add(Dropout(0.1))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_2'))
+    #model.add(Dropout(0.1))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv4_3'))
+    #model.add(Dropout(0.1))
+
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_1'))
+    #model.add(Dropout(0.1))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_2'))
+    #model.add(Dropout(0.1))
+
+    model.add(ZeroPadding2D((1, 1)))
+    model.add(Convolution2D(512, 3, 3, activation='relu', name='conv5_3'))
+    #model.add(Dropout(0.1))
+    model.add(MaxPooling2D((2, 2), strides=(2, 2)))
+
+    model.add(Flatten())
+    model.add(Dense(4096, activation='relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(4096, activation='relu'))
+    model.add(Dropout(0.5))
+
+    '''
+    f = h5py.File(weights_file)
+    for k in range(1,len(model.layers)):
+        name = model.layers[k].name
+        g = f[name]
+        weights = [g['param_{}'.format(p)] for p in range(g.attrs['nb_params'])]
+        model.layers[k].set_weights(weights)
+    f.close()
+    '''
+    model.add(Dense(512, activation='softmax'))
+
+    model.load_weights(weights_file)
+
+    #rms = RMSprop(lr=0.0000001, rho=0.9, epsilon=1e-08, decay=0.0)
+    adagrad = Adagrad(lr=0.00005, epsilon=1e-08, decay=0.0) # lr: 0.0005 decay: 0.00005
+
+    model.compile(loss='categorical_crossentropy',
+                  optimizer=adagrad,
                   metrics=['accuracy'])
 
     return model
