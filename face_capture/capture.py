@@ -3,6 +3,16 @@ import os
 
 from face_capture.process import process_image
 
+def video_capture(path, batch_size=32):
+    cap = cv2.VideoCapture(path)
+    face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+    eye_cascade = cv2.CascadeClassifier('haarcascade_eye.xml')
+    while cap.isOpened():
+        ret, img = cap.read()
+        face_capture(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY),
+            face_cascade=face_cascade, eye_cascade=eye_cascade)
+
+
 def face_capture(img, face_cascade=None, eye_cascade=None, rgb=False):
     if rgb:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
