@@ -54,6 +54,7 @@ def fer2013():
     X_test = X_test.reshape(X_test.shape[0], 1, 48, 48)
     X_validation = X_validation.reshape(X_validation.shape[0], 1, 48, 48)
 
+
     X_train = histogramEqualize(X_train)
     X_test = histogramEqualize(X_test)
     X_validation = histogramEqualize(X_validation)
@@ -123,6 +124,68 @@ def fer2013_light(nb_train, nb_validation, nb_test):
     #X_train = X_train.astype('float32')
     #X_test = X_test.astype('float32')
     #X_validation = X_validation.astype('float32')
+
+    Y_train = np_utils.to_categorical(Y_train, nb_classes)
+    Y_test = np_utils.to_categorical(Y_test, nb_classes)
+    Y_validation = np_utils.to_categorical(Y_validation, nb_classes)
+
+    #print(Y_test)
+    #print(Y_test[0])
+
+    return (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation)
+
+def ck():
+    '''
+    Load the ck dataset from .npy files to python and preprocess
+    Return (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation)
+    '''
+    train = np.load('train_set_ck.npy')
+    #random.shuffle(train)
+    X_train = []
+    Y_train = []
+    for t in train:
+        X_train.append(t[0])
+        Y_train.append(t[1])
+    X_train = np.array(X_train)
+    Y_train = np.array(Y_train)
+
+    print('Train set loaded : {} images'.format(len(X_train)))
+
+    validation = np.load('val_set_ck.npy')
+    #random.shuffle(validation)
+    X_validation = []
+    Y_validation = []
+    for v in validation:
+        X_validation.append(v[0])
+        Y_validation.append(v[1])
+    X_validation = np.array(X_validation)
+    Y_validation = np.array(Y_validation)
+
+    print('Validation set loaded : {} images'.format(len(X_validation)))
+
+    test = np.load('test_set_ck.npy')
+    #random.shuffle(test)
+    X_test = []
+    Y_test = []
+    for t in test:
+        X_test.append(t[0])
+        Y_test.append(t[1])
+    X_test = np.array(X_test)
+    Y_test = np.array(Y_test)
+
+    print(Y_test)
+    print(Y_test[0])
+
+    print('Test set loaded : {} images'.format(len(X_test)))
+
+    print(X_train)
+    X_train = X_train.reshape(X_train.shape[0], 1, 48, 48)
+    X_test = X_test.reshape(X_test.shape[0], 1, 48, 48)
+    X_validation = X_validation.reshape(X_validation.shape[0], 1, 48, 48)
+
+    X_train = histogramEqualize(X_train)
+    X_test = histogramEqualize(X_test)
+    X_validation = histogramEqualize(X_validation)
 
     Y_train = np_utils.to_categorical(Y_train, nb_classes)
     Y_test = np_utils.to_categorical(Y_test, nb_classes)
