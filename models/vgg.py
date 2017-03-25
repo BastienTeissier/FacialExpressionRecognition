@@ -129,11 +129,11 @@ def vgg16():
 
     model.add(Dense(7, activation='softmax'))
 
-    #rms = RMSprop(lr=0.0001, rho=0.9, epsilon=1e-08, decay=0.0)
+    rms = RMSprop(lr=0.0001, rho=0.9, epsilon=1e-08, decay=0.00005)
     adagrad = Adagrad(lr=0.00005, epsilon=1e-08, decay=0.0)
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer=adagrad,
+                  optimizer=rms,
                   metrics=['accuracy'])
 
     return model
@@ -190,7 +190,7 @@ def vgg13():
     model.add(Dense(7, activation='softmax'))
 
     #rms = RMSprop(lr=0.0000001, rho=0.9, epsilon=1e-08, decay=0.0)
-    adagrad = Adagrad(lr=0.00001, epsilon=1e-08, decay=0.0) # lr: 0.0005 decay: 0.00005
+    adagrad = Adagrad(lr=0.000002, epsilon=1e-08, decay=0.0001) # lr: 0.0005 decay: 0.00005
 
     model.compile(loss='categorical_crossentropy',
                   optimizer=adagrad,

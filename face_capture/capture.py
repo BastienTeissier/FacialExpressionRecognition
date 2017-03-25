@@ -13,7 +13,7 @@ def video_capture(path, batch_size=32):
             face_cascade=face_cascade, eye_cascade=eye_cascade)
 
 
-def face_capture(img, face_cascade=None, eye_cascade=None, rgb=False):
+def face_capture(img, face_cascade=None, eye_cascade=None, rgb=False, eyes=False):
     if rgb:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -27,9 +27,12 @@ def face_capture(img, face_cascade=None, eye_cascade=None, rgb=False):
     faces = face_cascade.detectMultiScale(img, 1.3, 5)
     for (x,y,w,h) in faces:
         face = img[y:y+h, x:x+w]
-        eyes = eye_cascade.detectMultiScale(face)
-        if len(eyes)==2:
+        if not eyes:
             res.append(process_image(face))
+        else:
+            eyes = eye_cascade.detectMultiScale(face)
+            if len(eyes)==2:
+                res.append(process_image(face))
     return res
 
 if __name__=='__main__':

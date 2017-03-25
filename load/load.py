@@ -6,6 +6,7 @@ import os
 import random
 
 from face_capture.process import process_image
+from face_capture.capture import face_capture
 
 def load_fer2013(path):
     '''
@@ -139,6 +140,35 @@ def load_ck(src):
     np.save('train_set_ck.npy', train)
     np.save('val_set_ck.npy', val)
     np.save('test_set_ck.npy', test)
+
+def load_face_ck(src):
+    emotions = {"angry":0, "disgust":1, "fear":2, "happy":3, "sad":4, "surprise":5, "neutral":6}
+    X = [[] for i in range(7)]
+    for folder in os.listdir(src):
+        e = folder.split('_')[0]
+        if e!= 'contempt':
+            emotion = emotions[e]
+            print(folder)
+            for f in os.listdir(src+'/'+folder):
+                try:
+                    img = cv2.imread(src+'/'+folder+'/'+f,0)
+                    faces = face_capture(img)
+                    for face in faces:
+                        X[emotion].append(face)
+                except:
+                    print("Error with the image")
+    train, val, test = [],[],[]
+    for i in range(len(X)):
+        random.shuffle(X[i])
+        for e in range(int(8*len(X[i])/10)):
+            train.append((np.array(X[i][e]),i))
+        for e in range(int(8*len(X[i])/10), int(9*len(X[i])/10)):
+            val.append((np.array(X[i][e]),i))
+        for e in range(int(9*len(X[i])/10), len(X[i])):
+            test.append((np.array(X[i][e]),i))
+    np.save('train_set_ck_faces.npy', train)
+    np.save('val_set_ck_faces.npy', val)
+    np.save('test_set_ck_faces.npy', test)
 
 
 if __name__ == '__main__':

@@ -33,10 +33,10 @@ def train_without_augmentation():
         model.save_weights('model_vgg_13_eq.h5')
 
 def train_without_augmentation_ck():
-    model = vgg13()
+    model = vgg16()
     (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation) = ck()
     if load_weights:
-        model.load_weights('model_vgg_13_eq.h5')
+        model.load_weights('model_vgg_16_ck.h5')
     history = model.fit(X_train, Y_train,
               batch_size=batch_size,
               nb_epoch=nb_epoch,
@@ -47,7 +47,7 @@ def train_without_augmentation_ck():
     historic(history)
     confusion_matrix(predictions, Y_test)
     if save_weights:
-        model.save_weights('model_vgg_13_ck.h5')
+        model.save_weights('model_vgg_16_ck.h5')
 
 def train_with_augmentation():
     datagen = ImageDataGenerator(

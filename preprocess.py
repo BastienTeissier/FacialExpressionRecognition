@@ -139,7 +139,7 @@ def ck():
     Load the ck dataset from .npy files to python and preprocess
     Return (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation)
     '''
-    train = np.load('train_set_ck.npy')
+    train = np.load('train_set_ck_faces.npy')
     #random.shuffle(train)
     X_train = []
     Y_train = []
@@ -151,7 +151,7 @@ def ck():
 
     print('Train set loaded : {} images'.format(len(X_train)))
 
-    validation = np.load('val_set_ck.npy')
+    validation = np.load('val_set_ck_faces.npy')
     #random.shuffle(validation)
     X_validation = []
     Y_validation = []
@@ -163,7 +163,7 @@ def ck():
 
     print('Validation set loaded : {} images'.format(len(X_validation)))
 
-    test = np.load('test_set_ck.npy')
+    test = np.load('test_set_ck_faces.npy')
     #random.shuffle(test)
     X_test = []
     Y_test = []
