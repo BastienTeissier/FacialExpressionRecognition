@@ -6,9 +6,9 @@ from keras.preprocessing.image import ImageDataGenerator
 
 batch_size = 32
 nb_classes = 7
-nb_epoch = 100
+nb_epoch = 10
 save_weights = True
-load_weights = False
+load_weights = True
 
 # input image dimensions
 img_rows, img_cols = 48, 48
@@ -16,10 +16,10 @@ img_rows, img_cols = 48, 48
 img_channels = 1
 
 def train_without_augmentation():
-    model = vgg13()
+    model = vgg16()
     (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation) = fer2013()
     if load_weights:
-        model.load_weights('model_vgg_13_59.h5')
+        model.load_weights('model_vgg_16_eq.h5')
     history = model.fit(X_train, Y_train,
               batch_size=batch_size,
               nb_epoch=nb_epoch,
@@ -30,7 +30,7 @@ def train_without_augmentation():
     historic(history)
     confusion_matrix(predictions, Y_test)
     if save_weights:
-        model.save_weights('model_vgg_13_eq.h5')
+        model.save_weights('model_vgg_16_eq.h5')
 
 def train_without_augmentation_ck():
     model = vgg16()
@@ -74,4 +74,4 @@ def train_with_augmentation():
         model.save_weights('model_vgg_13_aug.h5')
 
 if __name__ == '__main__':
-    train_without_augmentation_ck()
+    train_without_augmentation()
