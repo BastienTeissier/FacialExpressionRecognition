@@ -50,7 +50,7 @@ def img_emotions(img, face_cascade=None, eye_cascade=None, rgb=True):
     face= process_image(face)
     face = histogramEqualize(np.array([[face]]))
 
-    intermediate_layer_model = Model(input=model.input, output=model.layers[4].output)
+    intermediate_layer_model = Model(input=model.input, output=model.layers[7].output)
     output = intermediate_layer_model.predict(face, batch_size=1)
     print(len(output[0]))
     img = img_grid(output[0])
