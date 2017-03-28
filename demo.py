@@ -11,7 +11,7 @@ import os
 
 model = vgg13()
 
-model.load_weights('model_vgg_13_59.h5')
+model.load_weights('model_vgg_13_ck.h5')
 
 def write_label(img, point, label, font=cv2.FONT_HERSHEY_SIMPLEX,
                font_scale=0.5, thickness=1):

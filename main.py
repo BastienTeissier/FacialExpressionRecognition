@@ -6,9 +6,9 @@ from keras.preprocessing.image import ImageDataGenerator
 
 batch_size = 32
 nb_classes = 7
-nb_epoch = 10
-save_weights = True
-load_weights = True
+nb_epoch = 50
+save_weights = False
+load_weights = False
 
 # input image dimensions
 img_rows, img_cols = 48, 48
@@ -73,5 +73,33 @@ def train_with_augmentation():
     if save_weights:
         model.save_weights('model_vgg_13_aug.h5')
 
+def train_with_augmentation_ck():
+    datagen = ImageDataGenerator(
+            rotation_range=10.,
+            horizontal_flip=True)
+
+    model = vgg16(dropout_in=0.25, dropout_out=0.5)
+    (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation) = ck()
+
+    if load_weights:
+        model.load_weights('model_vgg_16_aug_ck.h5')
+
+    history = model.fit_generator(datagen.flow(X_train, Y_train,
+                batch_size=batch_size), samples_per_epoch=2000, nb_epoch=nb_epoch,
+                validation_data=(X_validation, Y_validation))
+    predictions = model.predict(X_test, batch_size=batch_size, verbose=1)
+
+    historic(history)
+
+    confusion_matrix(predictions, Y_test)
+
+    if save_weights:
+        model.save_weights('model_vgg_16_aug_ck.h5')
+
 if __name__ == '__main__':
-    train_without_augmentation()
+    train_with_augmentation_ck()
+    #model = vgg13()
+    #(X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation) = fer2013()
+    #model.load_weights('model_vgg_13_59.h5')
+    #predictions = model.predict(X_test, batch_size=batch_size, verbose=1)
+    #confusion_matrix(predictions, Y_test)
