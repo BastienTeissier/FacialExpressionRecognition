@@ -188,17 +188,71 @@ def histogramEqualize(X):
 def gaussianFilter(X):
     return np.array([cv2.GaussianBlur(img,(3,3),0) for img in X])
 
+def median_substraction(X):
+    median_substraction = [[0 for i in range(len(X[0]))] for i in range (len(X))]
+    #Top left corner
+    neighbourhood = [X[0][0], X[0][1], X[1][0], \
+                    X[1][1]]
+    neighbourhood.sort()
+    median_substraction[0][0] += X[0][0] - (neighbourhood[1]+neighbourhood[2])/2
+    print(median_substraction[0][0])
+    #Top right corner
+    neighbourhood = [X[0][len(X[0])-1], X[0][len(X[0])-2], X[1][len(X[0])-1], \
+                    X[1][len(X[0])-2]]
+    neighbourhood.sort()
+    median_substraction[0][len(X[0])-1] += X[0][len(X[0])-1] - (neighbourhood[1]+neighbourhood[2])/2
+    print(median_substraction[0][len(X[0])-1])
+    #Bottom left corner
+    neighbourhood = [X[len(X)-1][0], X[len(X)-1][1], X[len(X)-2][0], \
+                    X[len(X)-2][1]]
+    neighbourhood.sort()
+    median_substraction[len(X)-1][0] += X[len(X)-1][0] - (neighbourhood[1]+neighbourhood[2])/2
+    print(median_substraction[len(X)-1][0])
+    #Bottom right corner
+    neighbourhood = [X[len(X)-1][len(X[0])-1], X[len(X)-1][len(X[0])-2], \
+                    X[len(X)-2][len(X[0])-1], X[len(X)-2][len(X[0])-2]]
+    neighbourhood.sort()
+    median_substraction[len(X)-1][len(X[0])-1] += X[len(X)-1][len(X[0])-1] - (neighbourhood[1]+neighbourhood[2])/2
+    print(median_substraction[len(X)-1][len(X[0])-1])
+    #Horizontal borders
+    for i in range(1,len(X)-1):
+        neighbourhood = [X[i-1][0], X[i-1][1], X[i][0], X[i][1], X[i+1][0], \
+                        X[i+1][1]]
+        neighbourhood.sort()
+        median_substraction[i][0] += X[i][0] - (neighbourhood[2]+neighbourhood[3])/2
+        neighbourhood = [X[i-1][len(X[0])-1], X[i-1][len(X[0])-1], X[i][len(X[0])-1], \
+                        X[i][len(X[0])-1], X[i+1][len(X[0])-1],X[i+1][len(X[0])-1]]
+        neighbourhood.sort()
+        median_substraction[i][len(X[0])-1] += X[i][len(X[0])-1] - (neighbourhood[2]+neighbourhood[3])/2
+    #Vertical borders
+    for k in range(1, len(X[0])-1):
+        neighbourhood = [X[0][k-1], X[0][k-1], X[0][k-1], X[1][k-1], X[1][k], \
+                        X[1][k+1]]
+        neighbourhood.sort()
+        median_substraction[0][k] += X[0][k] - (neighbourhood[2]+neighbourhood[3])/2
+        neighbourhood = [X[len(X)-1][k-1], X[len(X)-1][k-1], X[len(X)-1][k-1], \
+                        X[len(X)-2][k-1], X[len(X)-2][k], X[len(X)-2][k+1]]
+        neighbourhood.sort()
+        median_substraction[len(X)-2][k] += X[len(X)-2][k] - (neighbourhood[2]+neighbourhood[3])/2
+    print(median_substraction[0])
+    print(median_substraction[len(X)-2])
+    #Center
+    for i in range(1,len(X)-1):
+        for k in range(1, len(X[0])-1):
+            neighbourhood = [X[i-1][k-1], X[i-1][k], X[i-1][k+1], X[i][k-1],\
+                            X[i][k], X[i][k+1], X[i+1][k-1], X[i+1][k],\
+                            X[i+1][k+1]]
+            neighbourhood.sort()
+            median_substraction[i][k] += X[i][k] - neighbourhood[4]
+    print(median_substraction)
+    return np.array(median_substraction)
+
+
 
 if __name__ == '__main__':
     (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation) = fer2013()
     gaussian = gaussianFilter(X_train)
-    print(gaussian[0])
-    print(len(gaussian[0]))
-    print(gaussian[0][0])
-    print(len(gaussian[0][0]))
-    cv2.imshow('image1', X_train[0][0])
+    median = median_substraction(gaussian[0][0])
     cv2.imwrite('img.jpg', gaussian[0][0])
     cv2.imwrite('img1.jpg', X_train[0][0])
-    cv2.imshow('image2', gaussian[0][0])
-    cv2.waitKey(30)
-    cv2.destroyAllWindows()
+    cv2.imwrite('img2.jpg', median)
