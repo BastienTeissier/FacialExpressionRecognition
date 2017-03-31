@@ -15,6 +15,7 @@ img_rows, img_cols = 48, 48
 # FER2013 is grayscale
 img_channels = 1
 
+
 def train_without_augmentation():
     model = vgg16()
     (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation) = fer2013()
@@ -80,7 +81,6 @@ def train_with_augmentation_ck():
 
     model = vgg16(dropout_in=0.25, dropout_out=0.5)
     (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation) = ck()
-
     if load_weights:
         model.load_weights('model_vgg_16_aug_ck.h5')
 
@@ -96,6 +96,7 @@ def train_with_augmentation_ck():
     if save_weights:
         model.save_weights('model_vgg_16_aug_ck.h5')
 
+
 if __name__ == '__main__':
     train_with_augmentation_ck()
     #model = vgg13()
@@ -103,3 +104,7 @@ if __name__ == '__main__':
     #model.load_weights('model_vgg_13_59.h5')
     #predictions = model.predict(X_test, batch_size=batch_size, verbose=1)
     #confusion_matrix(predictions, Y_test)
+
+# Accuracy : taux d'erreur
+# Loss : fonction de cout - good elle diminue.
+# Val_acc :
