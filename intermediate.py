@@ -61,5 +61,5 @@ def img_emotions(img, face_cascade=None, eye_cascade=None, rgb=True):
 
 
 if __name__=='__main__':
-    img = cv2.imread('elodie.png', 1)
+    img = cv2.imread('chirac.jpg', 1)
     img_emotions(img)
