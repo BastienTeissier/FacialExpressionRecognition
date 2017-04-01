@@ -1,4 +1,4 @@
-from preprocess import *
+from preprocess import fer2013
 from models.vgg import basic
 from train import
 
@@ -15,3 +15,4 @@ if __name__ == '__main__':
     '''Define model'''
     model = basic()
     '''Train model'''
+    train_without_augmentation()
