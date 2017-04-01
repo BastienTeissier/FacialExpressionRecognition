@@ -22,16 +22,6 @@ def fer2013(ch=1):
     X_test, Y_test = load_data('test_set.npy')
     print('Test set loaded : {} images'.format(len(X_test)))
 
-    X_train = X_train.reshape(X_train.shape[0], 1, 48, 48)
-    X_test = X_test.reshape(X_test.shape[0], 1, 48, 48)
-    X_validation = X_validation.reshape(X_validation.shape[0], 1, 48, 48)
-
-    X_train = np.array(prepro(X_train))
-    #print("len : ")
-    #print(len(X_train[0]))
-    X_test = np.array(prepro(X_test))
-    X_validation = np.array(prepro(X_validation))
-
     if ch==1:
         X_train = X_train.reshape(X_train.shape[0], 1, 48, 48)
         X_test = X_test.reshape(X_test.shape[0], 1, 48, 48)
@@ -68,10 +58,6 @@ def fer2013_light(nb_train, nb_validation, nb_test):
     X_test, Y_test = load_data_light(nb_test, 'test_set.npy')
     print('Test set loaded : {} images'.format(len(X_test)))
 
-    X_train = X_train.reshape(X_train.shape[0], 1, 48, 48)
-    X_test = X_test.reshape(X_test.shape[0], 1, 48, 48)
-    X_validation = X_validation.reshape(X_validation.shape[0], 1, 48, 48)
-
     X_train = histogramEqualize(X_train)
     X_test = histogramEqualize(X_test)
     X_validation = histogramEqualize(X_validation)
@@ -95,14 +81,6 @@ def ck(ch=1):
 
     X_test, Y_test = load_data('test_set_ck_faces.npy')
     print('Test set loaded : {} images'.format(len(X_test)))
-
-    X_train = X_train.reshape(X_train.shape[0], 1, 48, 48)
-    X_test = X_test.reshape(X_test.shape[0], 1, 48, 48)
-    X_validation = X_validation.reshape(X_validation.shape[0], 1, 48, 48)
-
-    X_train = np.array(prepro(X_train))
-    X_test = np.array(prepro(X_test))
-    X_validation = np.array(prepro(X_validation))
 
     if ch==1:
         X_train = np.array(X_train).reshape(X_train.shape[0], 1, 48, 48)
@@ -137,6 +115,8 @@ def load_data_light(nb, dataset_npy):
         Y.append(t[1])
     X = np.array(X)
     Y = np.array(Y)
+    X = X.reshape(X.shape[0], 1, 48, 48)
+    X = np.array(prepro(X))
     return X, Y
 
 def load_data(dataset_npy):
@@ -148,6 +128,8 @@ def load_data(dataset_npy):
         Y.append(t[1])
     X = np.array(X)
     Y = np.array(Y)
+    X = X.reshape(X.shape[0], 1, 48, 48)
+    X = np.array(prepro(X))
     return X, Y
 
 def histogramme_cumule(hist):
@@ -236,13 +218,3 @@ def median_substraction(X):
             neighbourhood.sort()
             median_substraction[i][k] += X[i][k] - neighbourhood[4]
     return np.array(median_substraction)
-
-
-
-if __name__ == '__main__':
-    (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation) = fer2013()
-    gaussian = gaussianFilter(X_train)
-    median = median_substraction(gaussian[0][0])
-    cv2.imwrite('img.jpg', gaussian[0][0])
-    cv2.imwrite('img1.jpg', X_train[0][0])
-    cv2.imwrite('img2.jpg', median)
