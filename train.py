@@ -149,9 +149,8 @@ def test(model=None):
     confusion_matrix(predictions, Y_test)
 
 if __name__ == '__main__':
-    train_without_augmentation()
+    #train_without_augmentation()
     #test()
-    '''
     model = VGGFace(trainable=False)
     (X_train, Y_train), (X_test, Y_test), (X_validation, Y_validation) = ck(ch=3)
     model.fit(X_train, Y_train,
@@ -159,6 +158,8 @@ if __name__ == '__main__':
               nb_epoch=nb_epoch,
               validation_data=(X_validation, Y_validation),
               shuffle=True)
+    test(model)
+    '''
     scores = model.evaluate(X_test, Y_test)
     print(scores)
     predictions = model.predict(X_test, batch_size=128, verbose=1)

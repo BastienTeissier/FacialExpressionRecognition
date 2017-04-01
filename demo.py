@@ -1,4 +1,4 @@
-from models.vgg import vgg13
+from models.vgg import vgg13, vgg16
 from result import emotions
 from preprocess import histogramEqualize
 from face_capture.process import process_image
@@ -9,9 +9,9 @@ import cv2
 import numpy as np
 import os
 
-model = vgg13()
+model = vgg16()
 
-model.load_weights('model_vgg_13_ck.h5')
+model.load_weights('model_vgg_16.h5')
 
 def write_label(img, point, label, font=cv2.FONT_HERSHEY_SIMPLEX,
                font_scale=0.5, thickness=1):
@@ -44,5 +44,5 @@ def img_emotions(img, face_cascade=None, eye_cascade=None, rgb=True):
     cv2.destroyAllWindows()
 
 if __name__=='__main__':
-    img = cv2.imread('chirac_mickey.jpg', 1)
+    img = cv2.imread('obamas.jpg', 1)
     img_emotions(img)

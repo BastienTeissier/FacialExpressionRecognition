@@ -223,11 +223,6 @@ def histogramEqualize(X):
 
 def prepro(X):
     X = gaussianFilter(X)
-    print("===================")
-    print(len(X))
-    print("===================")
-    print(len(X[0]))
-    print("===================")
     res = []
     for i in range(len(X)):
         if i%10==0:

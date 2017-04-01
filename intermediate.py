@@ -1,4 +1,4 @@
-from models.vgg import vgg13
+from models.vgg import vgg13, vgg16
 from result import emotions
 from preprocess import histogramEqualize
 from face_capture.process import process_image
@@ -12,9 +12,9 @@ import numpy as np
 import os
 import math
 
-model = vgg13()
+model = vgg16()
 
-model.load_weights('model_vgg_13_59.h5')
+model.load_weights('model_vgg_16.h5')
 
 def img_grid(imgs):
     n = int(math.sqrt(len(imgs)))
